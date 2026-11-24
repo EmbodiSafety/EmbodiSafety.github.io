@@ -45,7 +45,7 @@ function playDemo(video){
 }
 function updateGallery(){
   demoVideos.forEach(video=>{const show=visibleVideos.has(video)&&!video.closest('.demo-card').hidden;
-    if(!show||document.hidden||userPausedVideos.has(video)||(galleryPaused&&!userPlayingVideos.has(video)))pauseDemo(video);else{ensureSource(video);playDemo(video);}
+    if(!show||document.hidden||document.querySelector('#demoDialog').open||userPausedVideos.has(video)||(galleryPaused&&!userPlayingVideos.has(video)))pauseDemo(video);else{ensureSource(video);playDemo(video);}
   });
   galleryMotion.textContent=galleryPaused?'Play videos':'Pause videos';galleryMotion.setAttribute('aria-pressed',String(galleryPaused));
 }
@@ -78,18 +78,35 @@ document.querySelectorAll('[data-coming]').forEach(link=>link.addEventListener('
 
 const demoDialog=document.querySelector('#demoDialog');
 const dialogVideo=demoDialog.querySelector('video');
+const demoVideoStatus=document.querySelector('#demoVideoStatus');
+const demoOriginalLink=document.querySelector('#demoOriginalLink');
+const videoMessage=(en,zh)=>document.documentElement.lang==='zh-CN'?zh:en;
+function showVideoError(){
+ demoVideoStatus.textContent=videoMessage('Unable to load the HD video. Check your connection or open the video directly.','高清视频加载失败，请检查网络，或直接打开视频链接。');
+}
+dialogVideo.addEventListener('error',()=>{if(demoDialog.open&&dialogVideo.getAttribute('src'))showVideoError();});
+dialogVideo.addEventListener('playing',()=>{demoVideoStatus.textContent='';});
 document.querySelectorAll('.demo-open').forEach(button=>button.addEventListener('click',()=>{
- const card=button.closest('.demo-card');
- pauseDemo(card.querySelector('video'));
- dialogVideo.src=card.querySelector('video').dataset.src;
+ const card=button.closest('.demo-card'),preview=card.querySelector('video');
+ dialogVideo.poster=preview.poster;
+ dialogVideo.loop=true;
+ dialogVideo.src=preview.dataset.fullSrc;
+ demoOriginalLink.href=preview.dataset.fullSrc;
+ demoOriginalLink.textContent=videoMessage('Open HD video','打开高清视频');
+ demoVideoStatus.textContent=videoMessage('Loading HD video…','正在加载高清视频…');
  demoDialog.querySelector('h3').textContent=card.querySelector('h3').textContent;
- demoDialog.querySelector('.demo-dialog-copy p').textContent=card.querySelector('.demo-caption p').textContent;
+ demoDialog.querySelector('.demo-dialog-copy > p:not(#demoVideoStatus)').textContent=card.querySelector('.demo-caption p').textContent;
  demoDialog.showModal();
- dialogVideo.play();
+ updateGallery();
+ dialogVideo.play().catch(error=>{
+  if(!demoDialog.open||error.name==='AbortError')return;
+  if(error.name==='NotAllowedError')demoVideoStatus.textContent=videoMessage('Press play to start the HD video.','请点击播放按钮观看高清视频。');
+  else showVideoError();
+ });
 }));
 demoDialog.querySelector('.demo-dialog-close').addEventListener('click',()=>demoDialog.close());
 demoDialog.addEventListener('click',event=>{if(event.target===demoDialog)demoDialog.close();});
-demoDialog.addEventListener('close',()=>{dialogVideo.pause();dialogVideo.removeAttribute('src');dialogVideo.load();updateGallery();});
+demoDialog.addEventListener('close',()=>{dialogVideo.pause();dialogVideo.removeAttribute('src');dialogVideo.removeAttribute('poster');dialogVideo.load();demoVideoStatus.textContent='';demoOriginalLink.removeAttribute('href');updateGallery();});
 
 // Each diagram explains its active step; pointer and keyboard take priority over autoplay.
 const construction=document.querySelector('#construction');
