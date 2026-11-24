@@ -1,0 +1,12 @@
+{
+  "claude.svg": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/packages/static-svg/icons/claude-color.svg",
+  "openai.svg": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/packages/static-svg/icons/openai.svg",
+  "gemini.svg": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/packages/static-svg/icons/gemini-color.svg",
+  "qwen.svg": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/packages/static-svg/icons/qwen-color.svg",
+  "mimo.svg": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/packages/static-svg/icons/xiaomimimo.svg",
+  "hunyuan.svg": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/packages/static-svg/icons/hunyuan-color.svg",
+  "baai.svg": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/packages/static-svg/icons/baai.svg",
+  "LICENSE-lobe-icons.txt": "https://raw.githubusercontent.com/lobehub/lobe-icons/master/LICENSE",
+  "internvl.png": "https://avatars.githubusercontent.com/u/94522163?v=4&s=96",
+  "homeguard.png": "https://avatars.githubusercontent.com/u/194484914?v=4&s=96"
+}
